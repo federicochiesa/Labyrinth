@@ -57,36 +57,43 @@ int main()
 
     int imageWidth = std::stoi(mazeVector[IMAGE_WIDTH_INDEX]);
     int imageHeight = std::stoi(mazeVector[IMAGE_HEIGHT_INDEX]);
-    Ball ballArray[numberOfBalls];
+    std::vector<Ball> ballArray;
 
-    for(Ball b : ballArray){
-        b.x.push_back(startX);
-        b.y.push_back(startY);
+    for(int i = 0; i < numberOfBalls; i++){
+        Ball b;
+        ballArray.push_back(b);
+    }
+
+    for(int i = 0; i < ballArray.size(); i++){
+        ballArray[i].x.push_back(startX);
+        ballArray[i].y.push_back(startY);
     }
 
     Ball p;
     Ball *finisher = &p;
     finisher = NULL;
     while(finisher == NULL){
-        for(Ball b : ballArray){
-            int nextX = b.x.back() + uni(rng);
-            int nextY = b.y.back() + uni(rng);
+        for(int i = 0; i < ballArray.size(); i++){
+            int nextX = ballArray[i].x.back() + uni(rng);
+            int nextY = ballArray[i].y.back() + uni(rng);
             while(mazeVector[nextY * (imageWidth - 1) + nextX] == "0"){
-                nextX = b.x.back() + uni(rng);
-                nextY = b.y.back() + uni(rng);
+                nextX = ballArray[i].x.back() + uni(rng);
+                nextY = ballArray[i].y.back() + uni(rng);
             }
-            b.x.push_back(nextX);
-            b.y.push_back(nextY);
+            ballArray[i].x.push_back(nextX);
+            ballArray[i].y.push_back(nextY);
             if(mazeVector[nextY * (imageWidth - 1) + nextX] != "0" && mazeVector[nextY * (imageWidth - 1) + nextX] != "255"){
-                finisher = &b;
-                for(int i = 0; i < b.x.size(); i++){
-                    mazeVector[b.x[i] * (imageWidth - 1) + b.y[i]] = "100";
+                finisher = &ballArray[i];
+                std::cout << "vinto";
+                for(int j = 0; j < ballArray[i].x.size(); j++){
+                    mazeVector[ballArray[i].x[j] * (imageWidth - 1) + ballArray[i].y[j]] = "100";
                 }
+                
                 std::ofstream file("result.pgm");
                 if (file.is_open()) {
                     file << mazeVector[0] + "\n" + mazeVector[1] + " " + mazeVector[2] + "\n" + mazeVector[3] + "\n";
                     std::string result;
-                    for(int i = 4; i < mazeVector.size(); i++){
+                    for(int k = 4; k < mazeVector.size(); k++){
                         result += word + " ";
                     }
                     file << result;
@@ -95,5 +102,6 @@ int main()
             }
         }
     }
+    std::cout << "finito!";
     return 0;
 }
