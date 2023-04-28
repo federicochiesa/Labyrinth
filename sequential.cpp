@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <time.h>
+#include <chrono>
 #include <random>
 
 #define FILE_HEADER 0
@@ -67,7 +67,8 @@ int main()
         ballArray[i].x.push_back(startX);
         ballArray[i].y.push_back(startY);
     }
-
+    
+    auto start_time = std::chrono::high_resolution_clock::now();
     Ball p;
     Ball *finisher = &p;
     finisher = NULL;
@@ -83,11 +84,8 @@ int main()
             ballArray[i].y.push_back(nextY);
             if(mazeVector[nextY * (imageWidth - 1) + nextX] != "0" && mazeVector[nextY * (imageWidth - 1) + nextX] != "255"){
                 finisher = &ballArray[i];
-                std::cout << "vinto";
-                for(int j = 0; j < ballArray[i].x.size(); j++){
+                for(int j = 0; j < ballArray[i].x.size(); j++)
                     mazeVector[ballArray[i].y[j] * (imageWidth - 1) + ballArray[i].x[j]] = "100";
-                }
-                
                 std::ofstream file("result.pgm");
                 if (file.is_open()) {
                     file << mazeVector[0] + "\n" + mazeVector[1] + " " + mazeVector[2] + "\n" + mazeVector[3] + "\n";
@@ -98,6 +96,8 @@ int main()
                     file << result;
                     file.close();
                 }
+                auto end_time = std::chrono::high_resolution_clock::now();
+                std::cout << "Finito in " << (end_time - start_time).count();
                 return 0;
             }
         }
