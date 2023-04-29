@@ -76,7 +76,7 @@ void mazeSolver()
         for(int i = 0; i < ballArray.size(); i++){
             int nextX = ballArray[i].x.back() + uni(rng);
             int nextY = ballArray[i].y.back() + uni(rng);
-            while(mazeVector[nextY * (imageWidth - 1) + nextX] == "0" || nextX < 0 || nextY < 0){
+            while(nextX < 0 || nextY < 0 || mazeVector[nextY * (imageWidth - 1) + nextX] == "0"){
                 nextX = ballArray[i].x.back() + uni(rng);
                 nextY = ballArray[i].y.back() + uni(rng);
             }

@@ -68,7 +68,7 @@ int main()
         ballArray[i].y.push_back(startY);
     }
     
-    auto start_time = std::chrono::high_resolution_clock::now();
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     Ball p;
     Ball *finisher = &p;
     finisher = NULL;
@@ -96,8 +96,8 @@ int main()
                     file << result;
                     file.close();
                 }
-                auto end_time = std::chrono::high_resolution_clock::now();
-                std::cout << "Finito in " << (end_time - start_time).count();
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                std::cout << "Serialized Time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
                 return 0;
             }
         }
