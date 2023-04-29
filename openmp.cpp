@@ -57,8 +57,8 @@ int main()
     }
 
     int imageWidth = std::stoi(mazeVector[IMAGE_WIDTH_INDEX]);
-    std::vector<Ball> ballArray;
 
+    std::vector<Ball> ballArray;
     for(int i = 0; i < numberOfBalls; i++){
         Ball b;
         ballArray.push_back(b);
@@ -68,10 +68,12 @@ int main()
         ballArray[i].x.push_back(startX);
         ballArray[i].y.push_back(startY);
     }
-
+    
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     Ball p;
     Ball *finisher = &p;
     finisher = NULL;
+    #pragma omp parallel
     while(finisher == NULL){
         for(int i = 0; i < ballArray.size(); i++){
             int nextX = ballArray[i].x.back() + uni(rng);
@@ -84,7 +86,6 @@ int main()
             ballArray[i].y.push_back(nextY);
             if(mazeVector[nextY * (imageWidth - 1) + nextX] != "0" && mazeVector[nextY * (imageWidth - 1) + nextX] != "255"){
                 finisher = &ballArray[i];
-                std::cout << "vinto";
                 for(int j = 0; j < ballArray[i].x.size(); j++)
                     mazeVector[ballArray[i].y[j] * (imageWidth - 1) + ballArray[i].x[j]] = "100";
                 std::ofstream file("result.pgm");
@@ -97,9 +98,47 @@ int main()
                     file << result;
                     file.close();
                 }
+                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                std::cout << "Serialized Time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
                 return 0;
             }
         }
     }
+
+    /*std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    Ball p;
+    p.x.push_back(startX);
+    p.y.push_back(startY);
+    bool win = false;
+    #pragma omp parallel
+    while (!win){
+        int nextX = p.x.back() + uni(rng);
+        int nextY = p.y.back() + uni(rng);
+        while(nextX < 0 || nextY < 0 || mazeVector[nextY * (imageWidth - 1) + nextX] == "0"){
+            nextX = p.x.back() + uni(rng);
+            nextY = p.y.back() + uni(rng);
+        }
+        p.x.push_back(nextX);
+        p.y.push_back(nextY);
+        if(mazeVector[nextY * (imageWidth - 1) + nextX] != "0" && mazeVector[nextY * (imageWidth - 1) + nextX] != "255"){
+            win = true;
+            std::cout << "vinto";
+            for(int j = 0; j < p.x.size(); j++)
+                mazeVector[p.y[j] * (imageWidth - 1) + p.x[j]] = "100";
+            std::ofstream file("result.pgm");
+            if (file.is_open()) {
+                file << mazeVector[0] + "\n" + mazeVector[1] + " " + mazeVector[2] + "\n" + mazeVector[3] + "\n";
+                std::string result;
+                for(int k = 4; k < mazeVector.size(); k++){
+                    result += mazeVector[k] + " ";
+                }
+                file << result;
+                file.close();
+            }
+            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+            std::cout << "Parallel Time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+            return 0;
+        }
+    }*/
     return 0;
 }
