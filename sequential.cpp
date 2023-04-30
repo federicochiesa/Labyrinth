@@ -57,10 +57,12 @@ int main()
 
     int imageWidth = std::stoi(mazeVector[IMAGE_WIDTH_INDEX]);
     std::vector<Ball> ballArray;
+    std::vector<bool> arrivedBalls;
 
     for(int i = 0; i < numberOfBalls; i++){
         Ball b;
         ballArray.push_back(b);
+        arrivedBalls.push_back(false);
     }
 
     for(int i = 0; i < ballArray.size(); i++){
@@ -69,36 +71,43 @@ int main()
     }
     
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    Ball p;
-    Ball *finisher = &p;
-    finisher = NULL;
-    while(finisher == NULL){
+    int num_finished;
+    while(num_finished < numberOfBalls){
+
         for(int i = 0; i < ballArray.size(); i++){
-            int nextX = ballArray[i].x.back() + uni(rng);
-            int nextY = ballArray[i].y.back() + uni(rng);
-            while(nextX < 0 || nextY < 0 || mazeVector[nextY * (imageWidth - 1) + nextX] == "0"){
-                nextX = ballArray[i].x.back() + uni(rng);
-                nextY = ballArray[i].y.back() + uni(rng);
-            }
-            ballArray[i].x.push_back(nextX);
-            ballArray[i].y.push_back(nextY);
-            if(mazeVector[nextY * (imageWidth - 1) + nextX] != "0" && mazeVector[nextY * (imageWidth - 1) + nextX] != "255"){
-                finisher = &ballArray[i];
-                for(int j = 0; j < ballArray[i].x.size(); j++)
-                    mazeVector[ballArray[i].y[j] * (imageWidth - 1) + ballArray[i].x[j]] = "100";
-                std::ofstream file("result.pgm");
-                if (file.is_open()) {
-                    file << mazeVector[0] + "\n" + mazeVector[1] + " " + mazeVector[2] + "\n" + mazeVector[3] + "\n";
-                    std::string result;
-                    for(int k = 4; k < mazeVector.size(); k++){
-                        result += mazeVector[k] + " ";
-                    }
-                    file << result;
-                    file.close();
+
+            if(arrivedBalls[i] == false){
+                // calculate next point
+                int nextX = ballArray[i].x.back() + uni(rng);
+                int nextY = ballArray[i].y.back() + uni(rng);
+                while(nextX < 0 || nextY < 0 || mazeVector[nextY * (imageWidth - 1) + nextX] == "0"){
+                    nextX = ballArray[i].x.back() + uni(rng);
+                    nextY = ballArray[i].y.back() + uni(rng);
                 }
-                std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-                std::cout << "Serialized Time = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
-                return 0;
+                ballArray[i].x.push_back(nextX);
+                ballArray[i].y.push_back(nextY);
+
+                // check if reached finish line
+                if(mazeVector[nextY * (imageWidth - 1) + nextX] != "0" && mazeVector[nextY * (imageWidth - 1) + nextX] != "255"){
+                    num_finished++;
+                    arrivedBalls[i] = true;
+                    // draw path
+                    for(int j = 0; j < ballArray[i].x.size(); j++)
+                        mazeVector[ballArray[i].y[j] * (imageWidth - 1) + ballArray[i].x[j]] = "100";
+                    std::ofstream file("result.pgm");
+                    if (file.is_open()) {
+                        file << mazeVector[0] + "\n" + mazeVector[1] + " " + mazeVector[2] + "\n" + mazeVector[3] + "\n";
+                        std::string result;
+                        for(int k = 4; k < mazeVector.size(); k++){
+                            result += mazeVector[k] + " ";
+                        }
+                        file << result;
+                        file.close();
+                    }
+                    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                    auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                    std::cout << "Serialized Time = " << time << "[ms] " << i << std::endl;
+                }
             }
         }
     }
