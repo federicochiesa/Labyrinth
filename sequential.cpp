@@ -73,7 +73,7 @@ int main()
     }
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    int num_finished;
+    int num_finished = 0;
     while (num_finished < numberOfBalls)
     {
 
