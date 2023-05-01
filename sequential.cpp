@@ -23,8 +23,8 @@ int main()
     // Parameters
     std::string filename = "maze1"; // Set this to the filename of the maze to solve.
     int numberOfBalls = 100;
-    int startX = 213;
-    int startY = 3;
+    int startX = 213; // Starting X pixel counting from the left
+    int startY = 3; // Starting X pixel counting from the top
 
     std::string maze;
     std::string textLine;
