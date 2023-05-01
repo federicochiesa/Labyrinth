@@ -18,43 +18,11 @@ struct Ball
     std::vector<int> y;
 };
 
-void mazeSolver()
+void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int startX, int startY)
 {
-    // Parameters
-    std::string filename = "maze1"; // Set this to the filename of the maze to solve.
-    int numberOfBalls = 10;
-    int startX = 213;
-    int startY = 3;
-
-    std::string maze;
-    std::string textLine;
-    std::ifstream fileReader((filename + ".pgm"));
     std::random_device rd;
     std::mt19937 rng(rd());
     std::uniform_int_distribution<int> uni(-3,3);
-    std::string word;
-    std::vector<std::string> mazeVector;
-
-    // Load and prepare image
-    while (getline(fileReader, textLine))
-        maze = maze + textLine + " ";
-    fileReader.close();
-    if (maze.length() != 0)
-    {
-        std::stringstream ss(maze);
-        while (ss >> word)
-            mazeVector.push_back(word);
-
-        if (mazeVector[FILE_HEADER] != "P2"){
-            std::cout << "File is in an invalid format. Please convert your file to PGM P2 format";
-            return;
-        }
-        
-    }
-    else{
-        std::cout << "File not found. Exiting...";
-        return;
-    }
 
     int imageWidth = std::stoi(mazeVector[IMAGE_WIDTH_INDEX]);
     std::vector<Ball> ballArray;
@@ -68,7 +36,6 @@ void mazeSolver()
         ballArray[i].x.push_back(startX);
         ballArray[i].y.push_back(startY);
     }
-
     Ball p;
     Ball *finisher = &p;
     finisher = NULL;
@@ -105,10 +72,43 @@ void mazeSolver()
 
 int main(){
     std::thread myThreads[10];
+    // Parameters
+    std::string filename = "maze1"; // Set this to the filename of the maze to solve.
+    int numberOfBalls = 10;
+    int startX = 213;
+    int startY = 3;
+
+    std::string maze;
+    std::string textLine;
+    std::ifstream fileReader((filename + ".pgm"));
+    
+    std::string word;
+    std::vector<std::string> mazeVector;
+
+    // Load and prepare image
+    while (getline(fileReader, textLine))
+        maze = maze + textLine + " ";
+    fileReader.close();
+    if (maze.length() != 0)
+    {
+        std::stringstream ss(maze);
+        while (ss >> word)
+            mazeVector.push_back(word);
+
+        if (mazeVector[FILE_HEADER] != "P2"){
+            std::cout << "File is in an invalid format. Please convert your file to PGM P2 format";
+            return -1;
+        }
+        
+    }
+    else{
+        std::cout << "File not found. Exiting...";
+        return -1;
+    }
 
     for(int i = 0; i < 10; i++){
-        myThreads[i] = std::thread(mazeSolver);
-        myThreads[i].detach();
+        std::thread(mazeSolver, numberOfBalls, std::ref(mazeVector), startX, startY);
+
     }
     return 0;
 }
