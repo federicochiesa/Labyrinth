@@ -73,7 +73,8 @@ void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int star
 
 int main(){
     // Parameters
-    std::thread myThreads[10]; // Set this to the number of threads to be launched
+    int numberOfThreads = 10; // Number of threads to be launched
+    std::thread myThreads[numberOfThreads];
     std::string filename = "maze1"; // Set this to the filename of the maze to solve.
     int numberOfBalls = 10;
     int startX = 213; // Starting X pixel counting from the left
@@ -107,9 +108,9 @@ int main(){
         return -1;
     }
 
-    for(int i = 0; i < myThreads.size(); i++){
-        std::thread(mazeSolver, numberOfBalls, std::ref(mazeVector), startX, startY);
-
+    for(int i = 0; i < numberOfThreads; i++){
+        myThreads[i] = std::thread(mazeSolver, numberOfBalls, std::ref(mazeVector), startX, startY);
+        myThreads[i].join();
     }
     return 0;
 }
