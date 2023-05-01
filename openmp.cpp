@@ -16,6 +16,7 @@ struct Ball
 {
     std::vector<int> x;
     std::vector<int> y;
+    bool arrived = false;
 };
 
 int main()

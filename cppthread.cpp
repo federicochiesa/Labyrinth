@@ -16,6 +16,7 @@ struct Ball
 {
     std::vector<int> x;
     std::vector<int> y;
+    bool arrived = false;
 };
 
 void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int startX, int startY)
