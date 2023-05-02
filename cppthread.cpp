@@ -62,7 +62,7 @@ void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int star
                 mutex.unlock();
                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
                 auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-                std::cout << "Finished in " << time << "ms";
+                std::cout << "Parallel time " << time << "[ms]";
                 for(int j = 0; j < ballArray[i].x.size(); j++)
                     mazeVector[ballArray[i].y[j] * (imageWidth - 1) + ballArray[i].x[j]] = "100";
                 std::ofstream file("result.pgm");
