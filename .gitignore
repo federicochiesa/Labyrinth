@@ -5,3 +5,4 @@ sequential
 cppthread.dSYM/Contents/Info.plist
 cppthread.dSYM/Contents/Resources/DWARF/cppthread
 cppthread
+openmp
