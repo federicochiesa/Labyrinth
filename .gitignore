@@ -2,7 +2,6 @@
 sequential.dSYM/
 sequential
 .DS_Store
-cppthread.dSYM/Contents/Info.plist
-cppthread.dSYM/Contents/Resources/DWARF/cppthread
+cppthread.dSYM/*
 cppthread
 openmp
