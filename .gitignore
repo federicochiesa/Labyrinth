@@ -1,7 +1,7 @@
 .vscode/
-sequential.dSYM/*
+sequential.dSYM/
 sequential
 .DS_Store
-cppthread.dSYM/*
+cppthread.dSYM/
 cppthread
 openmp
