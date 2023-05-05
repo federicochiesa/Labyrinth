@@ -5,3 +5,4 @@ sequential
 cppthread.dSYM/
 cppthread
 openmp
+openmp.o
