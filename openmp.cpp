@@ -18,6 +18,8 @@ struct Ball
     std::vector<int> y;
 };
 
+std::vector<long long> times;
+
 void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int startX, int startY)
 {
     // random number generator for the movement of the balls
@@ -44,7 +46,7 @@ void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int star
     volatile bool abort = false;
     while (!abort)
     {
-#pragma omp parallel for num_threads(2) schedule(static)
+#pragma omp parallel for num_threads(4) schedule(static)
         for (int i = 0; i < ballArray.size(); i++)
         { // random movement of the balls in both X and Y axes
             if (!abort)

@@ -17,6 +17,8 @@ struct Ball
     std::vector<int> y;
 };
 
+std::vector<long long> times;
+
 void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int startX, int startY)
 {
     // random number generator for the movement of the balls
@@ -57,6 +59,7 @@ void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int star
             { // if the ball is at the end of the maze...
                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
                 long long time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                times.push_back(time);
                 std::cout << time << " [ms]" << std::endl;
                 // result.set_value(time);
                 for (int j = 0; j < ballArray[i].x.size(); j++)
@@ -120,5 +123,12 @@ int main()
         std::cout << "Run " << j + 1 << ": ";
         mazeSolver(numberOfBalls, mazeVector, startX, startY);
     }
+        std::cout << times.size() << std::endl;
+    long long sum = 0;
+    for (int i = 0; i < times.size(); i++)
+    {
+        sum += times[i];
+    }
+    std::cout << "Mean: " << sum/times.size() << std::endl;
     return 0;
 }

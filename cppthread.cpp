@@ -15,6 +15,7 @@
 
 bool finished = false;
 std::mutex mutex;
+std::vector<long long> times;
 
 struct Ball
 {
@@ -68,6 +69,7 @@ void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int star
                 mutex.unlock();
                 std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
                 long long time = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                times.push_back(time);
                 std::cout << time << " [ms]" << std::endl;
                 //result.set_value(time);
                 for (int j = 0; j < ballArray[i].x.size(); j++)
@@ -91,11 +93,11 @@ void mazeSolver(int numberOfBalls, std::vector<std::string> mazeVector, int star
 int main()
 {
     // Parameters
-    int numberOfThreads = 10; // Number of threads to be launched
+    int numberOfThreads = 4; // Number of threads to be launched
     int numberOfRuns = 10;    // Number of runs to calculate stats on
     std::vector<std::thread> myThreads;
     std::string filename = "maze1"; // Set this to the filename of the maze to solve.
-    int numberOfBalls = 10;
+    int numberOfBalls = 25;
     int startX = 463; // Starting X pixel counting from the left
     int startY = 3;   // Starting X pixel counting from the top
 
@@ -139,5 +141,12 @@ int main()
         myThreads.clear();
         finished = false;
     }
+    std::cout << times.size() << std::endl;
+    long long sum = 0;
+    for (int i = 0; i < times.size(); i++)
+    {
+        sum += times[i];
+    }
+    std::cout << "Mean: " << sum/times.size() << std::endl;
     return 0;
 }
